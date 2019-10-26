@@ -1,17 +1,16 @@
-# A root finder algorithm (companion matrix)
+# Root finder algorithm (Companion matrix)
 
-  This algorithm uses a companion matrix to find roots of a polynomial.
-
-  It is necessary to install lapack and blas to run the algorithm. For Ubuntu users, just type
-  the command line below in the terminal,
+  This algorithm uses a companion matrix to find roots of a polynomial. What the algorithm
+does is change the problem of find roots to a problem of diagonalize a matrice. The program
+uses subroutines from LAPACK and BLAS to diagonalize the matrice; for Ubuntu users
+it is easy to install these packages using the command line below in the terminal.
 
   > #### In the terminal:
   >
   > sudo apt-get install liblapack-dev libblas-dev
 
 
-  To compile the root_finder_companion_matrix.f90 using gfortran, type the command line below
-  in the terminal.
+ To compile the root_finder_companion_matrix.f90 using gfortran, use the command line below. 
 
   > #### Compilation:
   >
