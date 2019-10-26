@@ -10,7 +10,7 @@ it is easy to install these packages using the command line below in the termina
   > sudo apt-get install liblapack-dev libblas-dev
 
 
- To compile the root_finder_companion_matrix.f90 using gfortran, use the command line below. 
+ To run root_finder_companion_matrix.f90 using gfortran, type the command line below. 
 
   > #### Compilation:
   >
