@@ -2,7 +2,7 @@
 
   This algorithm uses a companion matrix to find roots of a polynomial. What the algorithm
 does is change the problem of find roots to a problem of diagonalize a matrice. The program
-uses subroutines from LAPACK and BLAS to diagonalize the matrice; for Ubuntu users
+uses subroutines from LAPACK and BLAS to diagonalize the matrice, for Ubuntu users
 it is easy to install these packages using the command line below.
 
   > #### In the terminal:
