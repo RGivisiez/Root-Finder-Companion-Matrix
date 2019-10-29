@@ -266,6 +266,7 @@ Subroutine simple_polynomial
   ! Lapack root finder subroutine.
   Call lapack_root_finder(coefficients, pol_degree, real_part_root, img_part_root)
 
+  ! File name where roots will be stored.
   arq_name = 'roots/simple_roots.dat'
 
   ! Save root in a file.
