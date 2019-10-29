@@ -7,7 +7,7 @@ diagonalization, where the eigenvalues of this matrix are the polynomial roots. 
 subroutines from LAPACK and BLAS, so it is necessary to have these installed on your computer. For Ubuntu users,
 it is easy to install those packages using the command line below.
 
-  #### In the terminal:
+  #### Terminal:
  ```bash
  $ sudo apt-get install liblapack-dev libblas-dev
  ```
