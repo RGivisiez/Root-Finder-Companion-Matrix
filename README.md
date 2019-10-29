@@ -16,3 +16,7 @@
   > #### Compilation:
   >
   > gfortran -llapack -lblas root_finder_companion_matrix.f90 -o root_finder && ./root_finder
+
+## License
+
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
