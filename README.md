@@ -7,17 +7,18 @@ diagonalization, where the eigenvalues of this matrix are the polynomial roots. 
 subroutines from LAPACK and BLAS, so it is necessary to have these installed on your computer. For Ubuntu users,
 it is easy to install those packages using the command line below.
 
-  > #### In the terminal:
-  >
-  > sudo apt-get install liblapack-dev libblas-dev
+  #### In the terminal:
+ ```bash
+ $ sudo apt-get install liblapack-dev libblas-dev
+ ```
 
 
  To run root_finder_companion_matrix.f90 using gfortran, type the command line below. 
 
-  > #### Compilation:
-  >
-  > gfortran -llapack -lblas root_finder_companion_matrix.f90 -o root_finder && ./root_finder
-
+  #### Compilation:
+  ```bash 
+  $ gfortran -llapack -lblas root_finder_companion_matrix.f90 -o root_finder && ./root_finder
+  ```
 ## License
 
 See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
