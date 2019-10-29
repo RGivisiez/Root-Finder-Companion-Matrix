@@ -142,6 +142,14 @@ Module root_finder
 
   End Subroutine save_roots_arq
 
+End Module root_finder
+
+Module utils
+
+  Implicit None
+
+  Contains
+
   Subroutine number_of_rows_in_file(arq_name, rows_number)
     
     ! Return the number of rows of a file.
@@ -210,7 +218,7 @@ Module root_finder
 
   End Subroutine open_file_error
 
-End Module root_finder
+End Module utils
 
 Program Main
 
@@ -274,11 +282,12 @@ End Subroutine simple_polynomial
 Subroutine high_degree_polynomial
 
   Use root_finder
+  Use utils
   Implicit None
 
   Real*8, Allocatable, Dimension (:) :: coefficients                    ! Polynomial coefficients.
   Real*8, Allocatable, Dimension (:) :: img_part_root, real_part_root   ! Imaginary and real part of the roots.
-  Integer*4 pol_degree, rows_number, i
+  Integer*4 pol_degree, rows_number, i, err
 
   Character(len=60) arq_name
 
@@ -293,6 +302,7 @@ Subroutine high_degree_polynomial
   Allocate(coefficients(pol_degree + 1)) ! The +1 is to count the constant term c. (c + x + x^2)
 
   Open(100, file=arq_name)
+  Call open_file_error(arq_name, err)
 
   ! Read the file to get the coefficients.
   Do i = 1, rows_number
