@@ -42,7 +42,18 @@ Module root_finder
     Integer*4 j
     Real*8 normalization
    
-   Allocate(real_part_root(pol_degree), img_part_root(pol_degree))
+    Allocate(real_part_root(pol_degree), img_part_root(pol_degree))
+
+    if( size(coefficients) - 1 /= pol_degree )then
+      print*, ''
+      print*, 'The polynomial degree is inconsistent with the number of coefficients.'
+      print*, ''
+      print*, 'A polynomial degree is always the number of coefficients minus one.'
+      print*, ''
+      print*, 'Polynomial degree:', pol_degree
+      print*, 'Coefficintes number:', size(coefficients)
+      stop
+    end if
 
     LWORK = (2 + Nb) * 3 * (pol_degree + 1)
     
