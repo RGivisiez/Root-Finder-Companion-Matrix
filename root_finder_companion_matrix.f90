@@ -4,7 +4,7 @@ Module root_finder
 
   Contains
 
-  Subroutine lapack_root_finder(coefficients, pol_degree, real_part_root, img_part_root)
+  Subroutine lapack_root_finder(coefficients, real_part_root, img_part_root)
 
     ! Find roots of a polynomial using a companion matrix.
 
@@ -14,10 +14,8 @@ Module root_finder
     !               size 3, but its degree is 2.
 
     ! Parameters:
-    !             coefficients: Real*8, Dimension(pol_degree + 1)
+    !             coefficients: Real*8, Dimension(:)
     !                           Stores the coefficients of a polynomial.
-    !             pol_degree:   Integer*4
-    !                           Degree of the polynomial.
     ! Returns:
     !             real_part_root: Real*8, Allocatable, Dimension(:)
     !                             The real part of a root.
@@ -27,8 +25,7 @@ Module root_finder
     Implicit None
     
     Real*8, Allocatable, Dimension(:), intent(out) :: real_part_root, img_part_root
-    Real*8, intent(in) :: coefficients(pol_degree + 1)
-    Integer*4, intent(in) ::  pol_degree
+    Real*8, Dimension (:), intent(in) :: coefficients
     
     Integer*4, Parameter :: Nb = 64
     Integer*4 :: LWORK
@@ -40,20 +37,12 @@ Module root_finder
     Real*8, Allocatable, Dimension (:) :: WORK
 
     Integer*4 j
+    Integer*4 pol_degree
     Real*8 normalization
    
-    Allocate(real_part_root(pol_degree), img_part_root(pol_degree))
+    pol_degree = size(coefficients) - 1
 
-    if( size(coefficients) - 1 /= pol_degree )then
-      print*, ''
-      print*, 'The polynomial degree is inconsistent with the number of coefficients.'
-      print*, ''
-      print*, 'A polynomial degree is always the number of coefficients minus one.'
-      print*, ''
-      print*, 'Polynomial degree:', pol_degree
-      print*, 'Coefficintes number:', size(coefficients)
-      stop
-    end if
+    Allocate(real_part_root(pol_degree), img_part_root(pol_degree))
 
     LWORK = (2 + Nb) * 3 * (pol_degree + 1)
     
@@ -107,7 +96,7 @@ Module root_finder
     
   End Subroutine lapack_root_finder
 
-  Subroutine save_roots_arq(pol_degree, real_part_root, img_part_root, arq_name)
+  Subroutine save_roots_arq(real_part_root, img_part_root, arq_name)
       
     ! Save in a file all the roots found.
 
@@ -115,8 +104,6 @@ Module root_finder
     ! imaginary part.
 
     ! Parameters:
-    !             pol_degree:     Integer*4
-    !                             Degree of the polynomial.
     !             arq_name:       Character(len=*)
     !                             Name of the file where the roots will be recorded.
 
@@ -126,7 +113,6 @@ Module root_finder
     !             img_part_root:  Real*8
     !                             The imaginary part of a root.
 
-    Integer*4, intent(in) :: pol_degree
     Real*8, Dimension (:), intent(in) :: real_part_root, img_part_root
     Character(len=*), intent(in) :: arq_name
 
@@ -136,7 +122,14 @@ Module root_finder
 
     write(100,'("#",6X,"Real Part",15X,"Imaginary Part")')  
     
-    Do j = 1, pol_degree
+    if(size(real_part_root) /= size(img_part_root))then
+      print*, 'Different sizes:'
+      print*, 'real_part_root', size(real_part_root)
+      print*, 'img_part_root', size(img_part_root)
+      stop
+    end if
+
+    Do j = 1, size(real_part_root)
 
       If(img_part_root(j) .eq. 0.0d0)then
 
@@ -181,7 +174,7 @@ Module utils
 
     Open(100, file=Trim(arq_name), status='old', iostat=err)
 
-    Call open_file_error(arq_name, err)
+    Call open_file_error(arq_name, err, 'number_of_rows_in_file')
 
     rows_number = 0
 
@@ -199,30 +192,32 @@ Module utils
 
   End Subroutine number_of_rows_in_file
 
-  Subroutine open_file_error(arq_name, err)
+  Subroutine open_file_error(arq_name, err, sub_name)
 
-    ! Checks if the file was opened correctly.
+    ! Check if a file was open, if not print an error menssage and stop
+    ! the program.
 
-    ! Parameters:
-    !             arq_name: Character(len=*)
-    !                       Name of the file to be checked.
-    !
-    !             err:      Integer*4
-    !                       If there is a error, its value will be different
-    !                       from zero and will carrie a number related to
-    !                       the error type.   
-
-    ! Returns:
-    !            If there is a error, it will stop the program and returns a warning with
-    !            the error code.
+      ! Parameters:
+      !             arq_name:  Character(len=*)
+      !                        Name of the file to be checked.
+      !
+      !             err:       Integer*4
+      !                        Error number identification.
+      !
+      !             sub_name:  Character(len=*)
+      !                        Subroutine name.
+      !
+      ! Returns:
+      !            Returns Returns nothing.
 
     Implicit None
 
     Integer*4, intent(in) :: err
-    Character(len=*), intent(in) :: arq_name
+    Character(len=*), intent(in) :: arq_name, sub_name
 
     if (err /= 0) then
       print*,'File (', Trim(arq_name), ') does not exist.'
+      print*,'Subroutine name: ', sub_name
       print*,'Erro number:', err
       stop
     end if
@@ -275,13 +270,13 @@ Subroutine simple_polynomial
   coefficients(3) = -1   ! Second term (x^2)
 
   ! Lapack root finder subroutine.
-  Call lapack_root_finder(coefficients, pol_degree, real_part_root, img_part_root)
+  Call lapack_root_finder(coefficients, real_part_root, img_part_root)
 
   ! File name where roots will be stored.
   arq_name = 'roots/simple_roots.dat'
 
   ! Save root in a file.
-  Call save_roots_arq(pol_degree, real_part_root, img_part_root, arq_name)
+  Call save_roots_arq(real_part_root, img_part_root, arq_name)
 
   print*, ''
   print*, 'Solving: 4 - x^2 = 0'
@@ -299,7 +294,7 @@ Subroutine high_degree_polynomial
 
   Real*8, Allocatable, Dimension (:) :: coefficients                    ! Polynomial coefficients.
   Real*8, Allocatable, Dimension (:) :: img_part_root, real_part_root   ! Imaginary and real part of the roots.
-  Integer*4 pol_degree, rows_number, i, err
+  Integer*4 rows_number, i, err
 
   Character(len=60) arq_name
 
@@ -309,12 +304,10 @@ Subroutine high_degree_polynomial
   ! Get the number of rows in the file.
   Call number_of_rows_in_file(arq_name, rows_number)
 
-  pol_degree = rows_number - 1
-
-  Allocate(coefficients(pol_degree + 1)) ! The +1 is to count the constant term c. (c + x + x^2)
+  Allocate(coefficients(rows_number))
 
   Open(100, file=arq_name)
-  Call open_file_error(arq_name, err)
+  Call open_file_error(arq_name, err, 'high_degree_polynomial')
 
   ! Read the file to get the coefficients.
   Do i = 1, rows_number
@@ -325,12 +318,12 @@ Subroutine high_degree_polynomial
   print*, 'Solving a high degree polynomial.'
 
   ! Lapack root finder subroutine.
-  Call lapack_root_finder(coefficients, pol_degree, real_part_root, img_part_root)
+  Call lapack_root_finder(coefficients, real_part_root, img_part_root)
 
   arq_name = 'roots/HD_polynomial_roots.dat'
   
   ! Save root in a file.
-  Call save_roots_arq(pol_degree, real_part_root, img_part_root, arq_name)
+  Call save_roots_arq(real_part_root, img_part_root, arq_name)
 
   print*,
   print*,'Done.'
