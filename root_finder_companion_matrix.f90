@@ -325,9 +325,9 @@ Subroutine high_degree_polynomial
   ! Save root in a file.
   Call save_roots_arq(real_part_root, img_part_root, arq_name)
 
-  print*,
+  print*,''
   print*,'Done.'
-  print*,
+  print*,''
   
   print*,'See the roots in file: ', Trim(arq_name)
   print*, ''
